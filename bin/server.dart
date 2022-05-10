@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:shelf_router/shelf_router.dart';
@@ -11,16 +12,13 @@ void main(List<String> arguments) async {
   var app = Router();
   final ip = InternetAddress.anyIPv4;
 
-  app.get('/hello', (Request request) async {
-    print('hello endpoint');
+  app.get('/gateway/<amount>', (Request request, String amount) async {
+    print('gateway endpoint');
     final service = Service();
-    final url = await service.webviewPayment();
-    return Response.ok(url);
-  });
-
-  app.get('/url', (Request request) async {
-    print('url endpoint');
-    return Response.ok('Страница работает');
+    final url = await service.webviewPayment(amount);
+    final body = {"formUrl": url};
+    return Response.ok(jsonEncode(body),
+        headers: {'Content-Type': 'application/json'});
   });
 
   app.get('/user/<user>', (Request request, String user) {

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'config.dart';
 import 'sber/sberbank_acquiring_core.dart';
 
@@ -9,12 +11,14 @@ class Service {
     ),
   );
 
-  Future<String> webviewPayment() async {
+  Future<String> webviewPayment(String amount) async {
+    var rng = Random();
+    final orderNumber = rng.nextInt(1000000);
     final RegisterResponse register = await acquiring.register(RegisterRequest(
-      amount: 1000,
+      amount: int.parse(amount) * 100,
       returnUrl: 'https://test.ru/return.html',
       failUrl: 'https://test.ru/fail.html',
-      orderNumber: 'test233111',
+      orderNumber: '$orderNumber',
       pageView: 'MOBILE',
     ));
 
@@ -23,10 +27,3 @@ class Service {
     return formUrl;
   }
 }
-
-// final List<PaymentItem> items = <PaymentItem>[
-//   PaymentItem(name: 'T-Shirt', price: 2000),
-//   PaymentItem(name: 'Trousers', price: 1600),
-// ];
-
-
